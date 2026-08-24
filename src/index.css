@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-950 text-silver font-sans selection:bg-electric/30 selection:text-white overflow-x-hidden;
+  }
+}
+
+/* Glassmorphism panels */
+.glass-panel {
+  background: rgba(10, 10, 10, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.035);
+}
+
+.glass-panel-hover {
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(14, 14, 14, 0.85);
+  border-color: rgba(0, 82, 255, 0.25);
+  box-shadow: 0 10px 40px rgba(0, 82, 255, 0.1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030303;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1c1c1c;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #087f8c;
+}
+
+/* Radial Vignette */
+.bg-radial-vignette {
+  background: radial-gradient(circle at center, rgba(10, 10, 10, 0.15) 0%, rgba(3, 3, 3, 0.96) 80%);
+}
+
+/* Text glow effects */
+.text-glow-blue {
+  text-shadow: 0 0 25px rgba(8, 127, 140, 0.45);
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 25px rgba(243, 112, 33, 0.35);
+}
+
+/* R3F Canvas container override */
+.r3f-canvas-container {
+  pointer-events: none;
+}
+
+.r3f-canvas-container canvas {
+  pointer-events: auto;
+}
+
+/* CSS 3D Tilt */
+.tilt-card-container {
+  perspective: 1200px;
+}
+
+.tilt-card {
+  transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+  transform-style: preserve-3d;
+}
+
+.tilt-card-content {
+  transform: translateZ(40px);
+}
+
+/* Custom cursor tracker ambient glow */
+.cursor-glow-light {
+  background: radial-gradient(circle, rgba(8, 127, 140, 0.08) 0%, rgba(8, 127, 140, 0) 70%);
+  pointer-events: none;
+}
+
+/* Self-drawing divider setups */
+.origin-left-line {
+  transform-origin: left center;
+}
+
+.origin-top-line {
+  transform-origin: top center;
+}
