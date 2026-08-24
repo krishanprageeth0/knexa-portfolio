@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { Hero3D } from './components/Hero3D';
 import { About } from './components/About';
@@ -7,11 +8,15 @@ import { Portfolio } from './components/Portfolio';
 import { Gallery } from './components/Gallery';
 import { Contact } from './components/Contact';
 import { WhatsApp } from './components/WhatsApp';
-import { Background3D } from './components/Background3D';
+import { Loader } from './components/Loader';
+
+// Lazily load heavy WebGL background for instant HTML/CSS paints (Speed Optimization)
+const Background3D = lazy(() => import('./components/Background3D'));
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -59,35 +64,48 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen text-silver antialiased select-none bg-transparent overflow-x-hidden">
-      {/* Site-wide Continuous 3D Background */}
-      <Background3D />
+    <>
+      <AnimatePresence mode="wait">
+        {loading && <Loader onComplete={() => setLoading(false)} />}
+      </AnimatePresence>
 
-      {/* Mouse Follower Glow Aura (Weichie design helper) */}
-      <div
-        className="fixed w-[600px] h-[600px] rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2 cursor-glow-light z-0 transition-transform duration-300 ease-out hidden md:block"
-        style={{
-          left: `${mousePos.x}px`,
-          top: `${mousePos.y}px`,
-        }}
-      />
+      <div className="relative min-h-screen text-silver antialiased select-none bg-transparent overflow-x-hidden">
+        {/* Site-wide Continuous 3D Background wrapped in Suspense fallback (Instant load) */}
+        <Suspense fallback={
+          <div className="fixed inset-0 w-full h-full -z-10 bg-[#020202]">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+            <div className="absolute inset-0 bg-radial-vignette pointer-events-none" />
+          </div>
+        }>
+          <Background3D />
+        </Suspense>
 
-      {/* Floating Header */}
-      <Navbar activeSection={activeSection} />
+        {/* Mouse Follower Glow Aura (Weichie design helper) */}
+        <div
+          className="fixed w-[600px] h-[600px] rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2 cursor-glow-light z-0 transition-transform duration-300 ease-out hidden md:block"
+          style={{
+            left: `${mousePos.x}px`,
+            top: `${mousePos.y}px`,
+          }}
+        />
 
-      {/* Page Content Overlay */}
-      <main className="relative z-10">
-        <Hero3D />
-        <About />
-        <Services />
-        <Portfolio />
-        <Gallery />
-        <Contact />
-      </main>
+        {/* Floating Header */}
+        <Navbar activeSection={activeSection} />
 
-      {/* Sticky Bottom-Right WhatsApp CTA */}
-      <WhatsApp />
-    </div>
+        {/* Page Content Overlay */}
+        <main className="relative z-10">
+          <Hero3D />
+          <About />
+          <Services />
+          <Portfolio />
+          <Gallery />
+          <Contact />
+        </main>
+
+        {/* Sticky Bottom-Right WhatsApp CTA */}
+        <WhatsApp />
+      </div>
+    </>
   );
 };
 
