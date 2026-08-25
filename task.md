@@ -11,6 +11,6 @@
 - [x] Refactor `Portfolio.tsx` (Planner page) to add project specs compiler, restore live URL Cyber Directory, and upgrade selection card contrast/text readability (linked to UI audio sweeps)
 - [x] Create `Gallery.tsx` graphic design showcase (masonry layout + lightbox) with 23 assets mapped to my project/ folders, prioritizing Social Posts first, rendering 2 columns on mobile (with lazy loading), and implementing GPU-accelerated SVG Liquid Distortion hover ripples (via requestAnimationFrame loops)
 - [x] Create `Loader.tsx` cyber preloader with percentage progress bar and compiling logs
-- [x] Create `audio.ts` Web Audio API sound synthesis utility for cyber-sfx feedback (using singleton context & gesture unlock controls)
+- [x] Create `audio.ts` HTML5 Audio data URI synthesiser for cyber-sfx feedback (safely bypassing browser policies)
 - [x] Refactor `Contact.tsx` with contact form, circular logo brand card header, and brand confetti
 - [x] Verify build compiles and hot-reloads on localhost:3000
