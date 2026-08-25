@@ -16,24 +16,21 @@ function getAudioContext() {
     sharedCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
   }
   
-  if (sharedCtx.state === 'suspended') {
-    sharedCtx.resume();
-  }
-  
   return sharedCtx;
 }
 
 // Global user gesture listener to unlock audio engine instantly
 if (typeof window !== 'undefined') {
   const unlockAudio = () => {
-    if (!isMuted) {
-      getAudioContext();
+    const ctx = getAudioContext();
+    if (ctx && ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
     }
     window.removeEventListener('click', unlockAudio);
     window.removeEventListener('touchstart', unlockAudio);
   };
-  window.addEventListener('click', unlockAudio);
-  window.addEventListener('touchstart', unlockAudio);
+  window.addEventListener('click', unlockAudio, { passive: true });
+  window.addEventListener('touchstart', unlockAudio, { passive: true });
 }
 
 export const sfx = {
@@ -42,16 +39,25 @@ export const sfx = {
     isMuted = val;
     localStorage.setItem('knexa_sfx_muted', String(val));
     if (!val) {
-      getAudioContext();
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
     }
     return isMuted;
   },
   
-  playHover: () => {
+  // High-pitched quick cursor sweep (Async-safe)
+  playHover: async () => {
     if (isMuted) return;
     try {
       const ctx = getAudioContext();
-      if (!ctx || ctx.state === 'suspended') return;
+      if (!ctx) return;
+      
+      // Ensure context is running before scheduling audio nodes
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
       
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -71,11 +77,17 @@ export const sfx = {
     } catch (e) {}
   },
   
-  playClick: () => {
+  // Clean cyber button tap (Async-safe)
+  playClick: async () => {
     if (isMuted) return;
     try {
       const ctx = getAudioContext();
-      if (!ctx || ctx.state === 'suspended') return;
+      if (!ctx) return;
+      
+      // Ensure context is running before scheduling audio nodes
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
       
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -95,11 +107,17 @@ export const sfx = {
     } catch (e) {}
   },
   
-  playCompile: () => {
+  // Rising lowpass sweep representing code compilation (Async-safe)
+  playCompile: async () => {
     if (isMuted) return;
     try {
       const ctx = getAudioContext();
-      if (!ctx || ctx.state === 'suspended') return;
+      if (!ctx) return;
+      
+      // Ensure context is running before scheduling audio nodes
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
       
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -124,11 +142,17 @@ export const sfx = {
     } catch (e) {}
   },
   
-  playSuccess: () => {
+  // Multi-tone major triad chime representing build success (Async-safe)
+  playSuccess: async () => {
     if (isMuted) return;
     try {
       const ctx = getAudioContext();
-      if (!ctx || ctx.state === 'suspended') return;
+      if (!ctx) return;
+      
+      // Ensure context is running before scheduling audio nodes
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
       
       const now = ctx.currentTime;
       const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
