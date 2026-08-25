@@ -1,3 +1,4 @@
+let sharedCtx: AudioContext | null = null;
 let isMuted = false;
 
 if (typeof window !== 'undefined') {
@@ -7,19 +8,51 @@ if (typeof window !== 'undefined') {
   }
 }
 
+// Singleton audio context getter with autoplay bypass
+function getAudioContext() {
+  if (typeof window === 'undefined') return null;
+  
+  if (!sharedCtx) {
+    sharedCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  }
+  
+  if (sharedCtx.state === 'suspended') {
+    sharedCtx.resume();
+  }
+  
+  return sharedCtx;
+}
+
+// Global user gesture listener to unlock audio engine instantly
+if (typeof window !== 'undefined') {
+  const unlockAudio = () => {
+    if (!isMuted) {
+      getAudioContext();
+    }
+    window.removeEventListener('click', unlockAudio);
+    window.removeEventListener('touchstart', unlockAudio);
+  };
+  window.addEventListener('click', unlockAudio);
+  window.addEventListener('touchstart', unlockAudio);
+}
+
 export const sfx = {
   getMuted: () => isMuted,
   setMuted: (val: boolean) => {
     isMuted = val;
     localStorage.setItem('knexa_sfx_muted', String(val));
+    if (!val) {
+      getAudioContext();
+    }
     return isMuted;
   },
   
-  // High-pitched quick cursor sweep
   playHover: () => {
     if (isMuted) return;
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
+      if (!ctx || ctx.state === 'suspended') return;
+      
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       
@@ -38,11 +71,12 @@ export const sfx = {
     } catch (e) {}
   },
   
-  // Clean cyber button tap
   playClick: () => {
     if (isMuted) return;
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
+      if (!ctx || ctx.state === 'suspended') return;
+      
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       
@@ -61,11 +95,12 @@ export const sfx = {
     } catch (e) {}
   },
   
-  // Rising lowpass sweep representing code compilation
   playCompile: () => {
     if (isMuted) return;
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
+      if (!ctx || ctx.state === 'suspended') return;
+      
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       const filter = ctx.createBiquadFilter();
@@ -89,11 +124,12 @@ export const sfx = {
     } catch (e) {}
   },
   
-  // Multi-tone major triad chime representing build success
   playSuccess: () => {
     if (isMuted) return;
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
+      if (!ctx || ctx.state === 'suspended') return;
+      
       const now = ctx.currentTime;
       const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
       

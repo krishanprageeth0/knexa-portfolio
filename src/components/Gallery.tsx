@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Eye } from 'lucide-react';
 import GridDivider from './GridDivider';
@@ -64,6 +64,50 @@ const AnimatedHeading: React.FC<{ subtitle: string; titlePart1: string; titlePar
 // GPU-Accelerated Liquid Distortion Card Component
 const GalleryCard: React.FC<{ item: GalleryItem; onClick: () => void }> = ({ item, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [displacementScale, setDisplacementScale] = useState(0);
+
+  useEffect(() => {
+    let frameId: number;
+    let start: number | null = null;
+    const duration = 650; // Milliseconds for the fluid sweep animation
+
+    const animate = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const progress = timestamp - start;
+      const t = Math.min(progress / duration, 1);
+
+      let currentScale = 0;
+      if (isHovered) {
+        // Entrance fluid ripple: quick sweep up to 45, then settle to 0
+        if (t < 0.25) {
+          currentScale = (t / 0.25) * 45;
+        } else if (t < 0.5) {
+          currentScale = 45 - ((t - 0.25) / 0.25) * 30;
+        } else {
+          currentScale = 15 - ((t - 0.5) / 0.5) * 15;
+        }
+      } else {
+        // Exit soft recoil ripple: quick sweep to 20, then settle to 0
+        if (t < 0.3) {
+          currentScale = (t / 0.3) * 20;
+        } else {
+          currentScale = 20 - ((t - 0.3) / 0.7) * 20;
+        }
+      }
+
+      setDisplacementScale(currentScale);
+
+      if (progress < duration) {
+        frameId = requestAnimationFrame(animate);
+      } else {
+        setDisplacementScale(0);
+      }
+    };
+
+    frameId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(frameId);
+  }, [isHovered]);
 
   return (
     <motion.div
@@ -77,7 +121,9 @@ const GalleryCard: React.FC<{ item: GalleryItem; onClick: () => void }> = ({ ite
         setIsHovered(true);
         sfx.playHover();
       }}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+      }}
       onClick={() => {
         onClick();
         sfx.playClick();
@@ -89,19 +135,12 @@ const GalleryCard: React.FC<{ item: GalleryItem; onClick: () => void }> = ({ ite
           <filter id={`liquid-${item.id}`} x="-10%" y="-10%" width="120%" height="120%">
             <feTurbulence
               type="fractalNoise"
-              baseFrequency="0.03"
+              baseFrequency="0.04"
               numOctaves="2"
               result="noise"
             />
-            <motion.feDisplacementMap
-              animate={{
-                // Animate scale to morph the image like a ripple on hover
-                scale: isHovered ? [0, 45, 15, 0] : [0, 25, 0]
-              }}
-              transition={{
-                duration: 0.75,
-                ease: "easeOut"
-              }}
+            <feDisplacementMap
+              scale={displacementScale}
               in="SourceGraphic"
               in2="noise"
               xChannelSelector="R"
@@ -415,7 +454,10 @@ export const Gallery: React.FC = () => {
             ] as const).map((opt) => (
               <Magnetic key={opt.id} range={15} strength={0.3}>
                 <button
-                  onClick={() => setFilter(opt.id)}
+                  onClick={() => {
+                    setFilter(opt.id);
+                    sfx.playClick();
+                  }}
                   className={`px-5 py-2.5 rounded-full font-display font-bold text-xs uppercase tracking-widest transition-all ${
                     filter === opt.id
                       ? 'bg-electric text-white shadow-lg shadow-electric/25'
