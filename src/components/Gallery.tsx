@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Eye } from 'lucide-react';
 import GridDivider from './GridDivider';
 import Magnetic from './Magnetic';
+import { sfx } from '../utils/audio';
 
 interface GalleryItem {
   id: string;
@@ -72,9 +73,15 @@ const GalleryCard: React.FC<{ item: GalleryItem; onClick: () => void }> = ({ ite
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.4 }}
       className="glass-panel overflow-hidden rounded-3xl border border-white/5 bg-dark-900/40 relative group cursor-pointer aspect-square"
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        sfx.playHover();
+      }}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick}
+      onClick={() => {
+        onClick();
+        sfx.playClick();
+      }}
     >
       {/* SVG Liquid Distortion Filter definition (GPU-driven) */}
       <svg className="absolute w-0 h-0 pointer-events-none">
