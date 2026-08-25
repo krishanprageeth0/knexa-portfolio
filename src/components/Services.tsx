@@ -201,6 +201,7 @@ export const Services: React.FC = () => {
 
   return (
     <section id="services" className="py-32 relative overflow-hidden bg-transparent">
+      <div id="pricing" className="absolute top-0" />
       {/* Editorial horizontal layout line */}
       <GridDivider direction="horizontal" className="absolute top-0 left-0 w-full" />
       <div className="absolute top-0 right-[8%] h-full w-[1px] bg-white/5 hidden xl:block" />
@@ -493,7 +494,7 @@ export const Services: React.FC = () => {
         </div>
 
         {/* Footnote */}
-        <div id="pricing" className="mt-20 text-center text-[10px] text-gray-500 max-w-xl mx-auto leading-relaxed font-semibold uppercase tracking-widest">
+        <div id="pricing-footnote" className="mt-20 text-center text-[10px] text-gray-500 max-w-xl mx-auto leading-relaxed font-semibold uppercase tracking-widest">
           * Website packages show base starting prices. Final quotes depend on feature requirements, layouts, and API integrations. All prices are in LKR.
         </div>
       </div>

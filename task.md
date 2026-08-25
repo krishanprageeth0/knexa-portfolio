@@ -5,7 +5,7 @@
 - [x] Implement `Background3D.tsx` global scroll-driven canvas (Abstract Morphing Particle Waves - Mobile Optimized)
 - [x] Update `src/index.css` with blueprint grids, custom cursor, and split reveals
 - [x] Refactor `src/App.tsx` to handle loader states, React Suspense chunk-splitting, and custom mouse glow
-- [x] Refactor `Navbar.tsx` with magnetic links, circular logo monogram + text logo, volume mute/unmute buttons, and Designs gallery anchors
+- [x] Refactor `Navbar.tsx` with magnetic links, circular logo monogram + text logo, volume mute/unmute buttons, offset-based smooth scroll anchors, and Designs gallery anchors
 - [x] Refactor `About.tsx` with split text reveals, self-drawing lines, and modern timeline
 - [x] Refactor `Services.tsx` with glowing tilt panels
 - [x] Refactor `Portfolio.tsx` (Planner page) to add project specs compiler, restore live URL Cyber Directory, and upgrade selection card contrast/text readability (linked to UI audio sweeps)

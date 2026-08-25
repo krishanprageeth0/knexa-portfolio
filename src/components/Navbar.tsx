@@ -16,10 +16,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
   const navLinks = [
     { name: 'Home', href: '#home' },
     { name: 'About', href: '#about' },
+    { name: 'Pricing', href: '#pricing' },
     { name: 'Services', href: '#services' },
     { name: 'Planner', href: '#portfolio' },
     { name: 'Designs', href: '#gallery' },
-    { name: 'Pricing', href: '#pricing' },
     { name: 'Contact', href: '#contact' },
   ];
 
