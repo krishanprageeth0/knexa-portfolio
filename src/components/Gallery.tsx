@@ -60,6 +60,83 @@ const AnimatedHeading: React.FC<{ subtitle: string; titlePart1: string; titlePar
   );
 };
 
+// GPU-Accelerated Liquid Distortion Card Component
+const GalleryCard: React.FC<{ item: GalleryItem; onClick: () => void }> = ({ item, onClick }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.4 }}
+      className="glass-panel overflow-hidden rounded-3xl border border-white/5 bg-dark-900/40 relative group cursor-pointer aspect-square"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
+    >
+      {/* SVG Liquid Distortion Filter definition (GPU-driven) */}
+      <svg className="absolute w-0 h-0 pointer-events-none">
+        <defs>
+          <filter id={`liquid-${item.id}`} x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.03"
+              numOctaves="2"
+              result="noise"
+            />
+            <motion.feDisplacementMap
+              animate={{
+                // Animate scale to morph the image like a ripple on hover
+                scale: isHovered ? [0, 45, 15, 0] : [0, 25, 0]
+              }}
+              transition={{
+                duration: 0.75,
+                ease: "easeOut"
+              }}
+              in="SourceGraphic"
+              in2="noise"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Image Frame */}
+      <div className="w-full h-full relative overflow-hidden bg-dark-950">
+        <img
+          src={item.image}
+          alt={item.title}
+          loading="lazy"
+          style={{
+            filter: `url(#liquid-${item.id})`
+          }}
+          className="w-full h-full object-cover scale-[1.01] group-hover:scale-[1.04] transition-transform duration-700 ease-out"
+        />
+        
+        {/* Overlay Hover */}
+        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-6">
+          <div className="flex justify-end">
+            <div className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white backdrop-blur-sm">
+              <Eye className="w-4 h-4" />
+            </div>
+          </div>
+          <div>
+            <span className="text-[9px] bg-electric font-display font-black tracking-widest text-white px-2.5 py-1.5 rounded-full uppercase mb-2 inline-block">
+              {item.category === 'card' ? 'business card' : item.category === 'label' ? 'packaging' : item.category}
+            </span>
+            <h3 className="font-display font-black text-sm text-white uppercase tracking-tight">
+              {item.title}
+            </h3>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 export const Gallery: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [filter, setFilter] = useState<'all' | 'label' | 'logo' | 'post' | 'card'>('all');
@@ -345,47 +422,15 @@ export const Gallery: React.FC = () => {
           </div>
         </div>
 
-        {/* Designs Masonry Grid */}
+        {/* Designs Grid with Liquid Ripple Hover */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           <AnimatePresence mode="popLayout">
             {filteredItems.map((item) => (
-              <motion.div
-                layout
+              <GalleryCard
                 key={item.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4 }}
-                className="glass-panel overflow-hidden rounded-3xl border border-white/5 bg-dark-900/40 relative group cursor-pointer aspect-square"
+                item={item}
                 onClick={() => setSelectedItem(item)}
-              >
-                {/* Image Frame */}
-                <div className="w-full h-full relative overflow-hidden bg-dark-950">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out"
-                  />
-                  
-                  {/* Overlay Hover */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-6">
-                    <div className="flex justify-end">
-                      <div className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white backdrop-blur-sm">
-                        <Eye className="w-4 h-4" />
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-[9px] bg-electric font-display font-black tracking-widest text-white px-2.5 py-1.5 rounded-full uppercase mb-2 inline-block">
-                        {item.category}
-                      </span>
-                      <h3 className="font-display font-black text-sm text-white uppercase tracking-tight">
-                        {item.title}
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              />
             ))}
           </AnimatePresence>
         </div>
@@ -432,7 +477,7 @@ export const Gallery: React.FC = () => {
               {/* Readout Description */}
               <div className="p-8 border-t border-white/5 bg-dark-950/90 backdrop-blur-md">
                 <span className="text-[9px] text-gold font-display font-black tracking-widest uppercase block mb-1">
-                  {selectedItem.category}
+                  {selectedItem.category === 'card' ? 'business card' : selectedItem.category === 'label' ? 'packaging' : selectedItem.category}
                 </span>
                 <h3 className="font-display font-black text-xl text-white uppercase tracking-tight mb-2">
                   {selectedItem.title}
