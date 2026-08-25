@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { CheckCircle2, Terminal, MessageSquare, RefreshCw, ExternalLink } from 'lucide-react';
 import GridDivider from './GridDivider';
 import Magnetic from './Magnetic';
-import { sfx } from '../utils/audio';
 
 interface PlatformOption {
   id: string;
@@ -181,11 +180,7 @@ export const Portfolio: React.FC = () => {
                 {platforms.map((p) => (
                   <div
                     key={p.id}
-                    onClick={() => {
-                      setPlatform(p.id);
-                      sfx.playCompile();
-                    }}
-                    onMouseEnter={() => sfx.playHover()}
+                    onClick={() => setPlatform(p.id)}
                     className={`p-6 rounded-2xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between h-40 ${
                       platform === p.id
                         ? 'border-electric bg-electric/[0.03] bg-[#0c0c0e] shadow-lg shadow-electric/5'
@@ -224,11 +219,7 @@ export const Portfolio: React.FC = () => {
                   return (
                     <div
                       key={a.id}
-                      onClick={() => {
-                        handleToggleAddon(a.id);
-                        sfx.playClick();
-                      }}
-                      onMouseEnter={() => sfx.playHover()}
+                      onClick={() => handleToggleAddon(a.id)}
                       className={`p-6 rounded-2xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between h-40 ${
                         isSelected
                           ? 'border-magenta bg-magenta/[0.03] bg-[#0c0c0e] shadow-lg shadow-magenta/5'
@@ -264,11 +255,7 @@ export const Portfolio: React.FC = () => {
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div
-                  onClick={() => {
-                    setDeliverySpeed('standard');
-                    sfx.playClick();
-                  }}
-                  onMouseEnter={() => sfx.playHover()}
+                  onClick={() => setDeliverySpeed('standard')}
                   className={`p-6 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                     deliverySpeed === 'standard'
                       ? 'border-electric bg-[#0c0c0e]'
@@ -285,11 +272,7 @@ export const Portfolio: React.FC = () => {
                 </div>
 
                 <div
-                  onClick={() => {
-                    setDeliverySpeed('express');
-                    sfx.playClick();
-                  }}
-                  onMouseEnter={() => sfx.playHover()}
+                  onClick={() => setDeliverySpeed('express')}
                   className={`p-6 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                     deliverySpeed === 'express'
                       ? 'border-electric bg-[#0c0c0e]'
@@ -371,11 +354,7 @@ export const Portfolio: React.FC = () => {
                 <div className="flex flex-col gap-4">
                   <Magnetic range={25} strength={0.25}>
                     <button
-                      onClick={() => {
-                        handleGenerateWhatsAppLink();
-                        sfx.playSuccess();
-                      }}
-                      onMouseEnter={() => sfx.playHover()}
+                      onClick={handleGenerateWhatsAppLink}
                       className="w-full py-4 rounded-full bg-gradient-to-r from-electric to-electric-light text-white font-extrabold text-xs uppercase tracking-widest shadow-lg shadow-electric/25 hover:shadow-electric/40 transition-all flex items-center justify-center gap-2"
                     >
                       <MessageSquare className="w-4 h-4 fill-white" /> Compile & Send Quote

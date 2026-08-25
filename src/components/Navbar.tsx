@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Volume2, VolumeX } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Magnetic from './Magnetic';
-import { sfx } from '../utils/audio';
 
 interface NavbarProps {
   activeSection: string;
@@ -11,7 +10,6 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [muted, setMuted] = useState(sfx.getMuted());
 
   const navLinks = [
     { name: 'Home', href: '#home' },
@@ -31,16 +29,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleToggleMute = () => {
-    const newVal = sfx.setMuted(!muted);
-    setMuted(newVal);
-    sfx.playClick();
-  };
-
   // Custom smooth scroll handler that respects fixed navbar heights
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    sfx.playClick();
     setIsOpen(false);
 
     const targetId = href.substring(1);
@@ -71,7 +62,6 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
           <a
             href="#home"
             onClick={(e) => handleScrollTo(e, '#home')}
-            onMouseEnter={() => sfx.playHover()}
             className="flex items-center gap-3 group cursor-pointer h-10"
           >
             <img src="/assets/logo.png" alt="Knexa System" className="h-full w-auto object-contain rounded-full shadow-md" />
@@ -95,7 +85,6 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                 <a
                   href={link.href}
                   onClick={(e) => handleScrollTo(e, link.href)}
-                  onMouseEnter={() => sfx.playHover()}
                   className={`relative px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-full transition-colors duration-300 block ${
                     isActive ? 'text-white' : 'text-gray-400 hover:text-white'
                   }`}
@@ -114,26 +103,13 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
           })}
         </div>
 
-        {/* Speaker Icon & Desktop CTA */}
-        <div className="hidden md:flex items-center gap-6">
-          <Magnetic range={20} strength={0.35}>
-            <button
-              onClick={handleToggleMute}
-              onMouseEnter={() => sfx.playHover()}
-              className="p-2.5 rounded-full border border-white/10 hover:border-white/25 text-gray-400 hover:text-white transition-all bg-dark-900/40 backdrop-blur-md"
-              title={muted ? "Unmute sound effects" : "Mute sound effects"}
-            >
-              {muted ? <VolumeX className="w-4 h-4 text-magenta" /> : <Volume2 className="w-4 h-4 text-electric" />}
-            </button>
-          </Magnetic>
-
+        {/* Desktop CTA */}
+        <div className="hidden md:block">
           <Magnetic range={30} strength={0.35}>
             <a
               href="https://wa.me/94767781717"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => sfx.playClick()}
-              onMouseEnter={() => sfx.playHover()}
               className="px-6 py-3 rounded-full bg-gradient-to-r from-electric to-electric-light text-white font-extrabold text-xs uppercase tracking-widest shadow-lg shadow-electric/25 hover:shadow-electric/40 block transition-all"
             >
               Get a Quote
@@ -142,13 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
         </div>
 
         {/* Mobile Menu Actions */}
-        <div className="md:hidden flex items-center gap-3">
-          <button
-            onClick={handleToggleMute}
-            className="p-2 text-gray-400 hover:text-white transition-colors"
-          >
-            {muted ? <VolumeX className="w-5 h-5 text-magenta" /> : <Volume2 className="w-5 h-5 text-electric" />}
-          </button>
+        <div className="md:hidden flex items-center">
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="p-2 text-gray-400 hover:text-white transition-colors"
