@@ -201,7 +201,7 @@ export const Services: React.FC = () => {
 
   return (
     <section id="services" className="py-32 relative overflow-hidden bg-transparent">
-      <div id="pricing" className="absolute top-0" />
+      <div id="pricing" className="absolute top-0 left-0 w-full h-[300px] pointer-events-none" />
       {/* Editorial horizontal layout line */}
       <GridDivider direction="horizontal" className="absolute top-0 left-0 w-full" />
       <div className="absolute top-0 right-[8%] h-full w-[1px] bg-white/5 hidden xl:block" />
