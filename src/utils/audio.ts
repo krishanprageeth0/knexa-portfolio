@@ -8,21 +8,25 @@ if (typeof window !== 'undefined') {
   }
 }
 
-// Singleton audio context getter with autoplay bypass
-function getAudioContext() {
+// Singleton audio context getter with strict gesture control
+function getAudioContext(forceCreate = false) {
   if (typeof window === 'undefined') return null;
   
-  if (!sharedCtx) {
-    sharedCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  if (!sharedCtx && forceCreate) {
+    try {
+      sharedCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    } catch (e) {
+      console.warn("Failed to create AudioContext:", e);
+    }
   }
   
   return sharedCtx;
 }
 
-// Global user gesture listener to unlock audio engine instantly
+// Global user gesture listener to unlock and initialize audio engine instantly
 if (typeof window !== 'undefined') {
   const unlockAudio = () => {
-    const ctx = getAudioContext();
+    const ctx = getAudioContext(true); // Create and initialize on click/touch gesture
     if (ctx && ctx.state === 'suspended') {
       ctx.resume().catch(() => {});
     }
@@ -39,7 +43,7 @@ export const sfx = {
     isMuted = val;
     localStorage.setItem('knexa_sfx_muted', String(val));
     if (!val) {
-      const ctx = getAudioContext();
+      const ctx = getAudioContext(true); // Initialize on click toggle
       if (ctx && ctx.state === 'suspended') {
         ctx.resume().catch(() => {});
       }
@@ -47,17 +51,12 @@ export const sfx = {
     return isMuted;
   },
   
-  // High-pitched quick cursor sweep (Async-safe)
+  // High-pitched quick cursor sweep (Only plays if context is already running)
   playHover: async () => {
     if (isMuted) return;
     try {
-      const ctx = getAudioContext();
-      if (!ctx) return;
-      
-      // Ensure context is running before scheduling audio nodes
-      if (ctx.state === 'suspended') {
-        await ctx.resume();
-      }
+      const ctx = getAudioContext(false); // Do not force create on hover
+      if (!ctx || ctx.state !== 'running') return;
       
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -77,14 +76,13 @@ export const sfx = {
     } catch (e) {}
   },
   
-  // Clean cyber button tap (Async-safe)
+  // Clean cyber button tap (Force creates context under click gesture)
   playClick: async () => {
     if (isMuted) return;
     try {
-      const ctx = getAudioContext();
+      const ctx = getAudioContext(true); // Initialize context on click
       if (!ctx) return;
       
-      // Ensure context is running before scheduling audio nodes
       if (ctx.state === 'suspended') {
         await ctx.resume();
       }
@@ -107,14 +105,13 @@ export const sfx = {
     } catch (e) {}
   },
   
-  // Rising lowpass sweep representing code compilation (Async-safe)
+  // Rising lowpass sweep representing code compilation
   playCompile: async () => {
     if (isMuted) return;
     try {
-      const ctx = getAudioContext();
+      const ctx = getAudioContext(true); // Initialize context on click
       if (!ctx) return;
       
-      // Ensure context is running before scheduling audio nodes
       if (ctx.state === 'suspended') {
         await ctx.resume();
       }
@@ -142,14 +139,13 @@ export const sfx = {
     } catch (e) {}
   },
   
-  // Multi-tone major triad chime representing build success (Async-safe)
+  // Multi-tone major triad chime representing build success
   playSuccess: async () => {
     if (isMuted) return;
     try {
-      const ctx = getAudioContext();
+      const ctx = getAudioContext(true); // Initialize context on click
       if (!ctx) return;
       
-      // Ensure context is running before scheduling audio nodes
       if (ctx.state === 'suspended') {
         await ctx.resume();
       }
