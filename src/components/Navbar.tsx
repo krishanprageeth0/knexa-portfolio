@@ -37,6 +37,26 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
     sfx.playClick();
   };
 
+  // Custom smooth scroll handler that respects fixed navbar heights
+  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    sfx.playClick();
+    setIsOpen(false);
+
+    const targetId = href.substring(1);
+    const element = document.getElementById(targetId);
+    if (element) {
+      const navbarOffset = scrolled ? 72 : 88; // Height padding for Py-4 vs Py-6
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - navbarOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
@@ -50,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
         <Magnetic range={30} strength={0.3}>
           <a
             href="#home"
-            onClick={() => sfx.playClick()}
+            onClick={(e) => handleScrollTo(e, '#home')}
             onMouseEnter={() => sfx.playHover()}
             className="flex items-center gap-3 group cursor-pointer h-10"
           >
@@ -74,7 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
               <Magnetic key={link.name} range={20} strength={0.4}>
                 <a
                   href={link.href}
-                  onClick={() => sfx.playClick()}
+                  onClick={(e) => handleScrollTo(e, link.href)}
                   onMouseEnter={() => sfx.playHover()}
                   className={`relative px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-full transition-colors duration-300 block ${
                     isActive ? 'text-white' : 'text-gray-400 hover:text-white'
@@ -155,10 +175,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                   <a
                     key={link.name}
                     href={link.href}
-                    onClick={() => {
-                      setIsOpen(false);
-                      sfx.playClick();
-                    }}
+                    onClick={(e) => handleScrollTo(e, link.href)}
                     className={`text-sm font-bold uppercase tracking-widest block transition-colors ${
                       isActive ? 'text-electric' : 'text-gray-400'
                     }`}
