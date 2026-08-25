@@ -183,8 +183,8 @@ export const Portfolio: React.FC = () => {
                     onClick={() => setPlatform(p.id)}
                     className={`p-6 rounded-2xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between h-40 ${
                       platform === p.id
-                        ? 'border-electric bg-electric/5 shadow-lg shadow-electric/5'
-                        : 'border-white/5 bg-dark-900/40 hover:border-white/15'
+                        ? 'border-electric bg-electric/[0.03] bg-[#0c0c0e] shadow-lg shadow-electric/5'
+                        : 'border-white/10 bg-[#09090b]/95 hover:border-white/20'
                     }`}
                   >
                     {platform === p.id && (
@@ -196,7 +196,7 @@ export const Portfolio: React.FC = () => {
                       <h4 className="font-display font-black text-sm text-white uppercase tracking-wide">
                         {p.name}
                       </h4>
-                      <p className="text-[11px] text-gray-400 mt-2 font-light leading-relaxed">
+                      <p className="text-xs text-gray-300 mt-2 font-normal leading-relaxed">
                         {p.desc}
                       </p>
                     </div>
@@ -222,8 +222,8 @@ export const Portfolio: React.FC = () => {
                       onClick={() => handleToggleAddon(a.id)}
                       className={`p-6 rounded-2xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between h-40 ${
                         isSelected
-                          ? 'border-magenta bg-magenta/5 shadow-lg shadow-magenta/5'
-                          : 'border-white/5 bg-dark-900/40 hover:border-white/15'
+                          ? 'border-magenta bg-magenta/[0.03] bg-[#0c0c0e] shadow-lg shadow-magenta/5'
+                          : 'border-white/10 bg-[#09090b]/95 hover:border-white/20'
                       }`}
                     >
                       {isSelected && (
@@ -235,7 +235,7 @@ export const Portfolio: React.FC = () => {
                         <h4 className="font-display font-black text-sm text-white uppercase tracking-wide">
                           {a.name}
                         </h4>
-                        <p className="text-[11px] text-gray-400 mt-2 font-light leading-relaxed">
+                        <p className="text-xs text-gray-300 mt-2 font-normal leading-relaxed">
                           {a.desc}
                         </p>
                       </div>
@@ -258,32 +258,32 @@ export const Portfolio: React.FC = () => {
                   onClick={() => setDeliverySpeed('standard')}
                   className={`p-6 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                     deliverySpeed === 'standard'
-                      ? 'border-electric bg-electric/5'
-                      : 'border-white/5 bg-dark-900/40 hover:border-white/15'
+                      ? 'border-electric bg-[#0c0c0e]'
+                      : 'border-white/10 bg-[#09090b]/95 hover:border-white/20'
                   }`}
                 >
                   <div>
                     <h4 className="font-display font-black text-xs text-white uppercase tracking-wider">
                       Standard
                     </h4>
-                    <span className="text-[10px] text-gray-400 font-light mt-1 block">Approx. 7-14 Days</span>
+                    <span className="text-xs text-gray-300 font-normal mt-1 block">Approx. 7-14 Days</span>
                   </div>
-                  <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Included</span>
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Included</span>
                 </div>
 
                 <div
                   onClick={() => setDeliverySpeed('express')}
                   className={`p-6 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                     deliverySpeed === 'express'
-                      ? 'border-electric bg-electric/5'
-                      : 'border-white/5 bg-dark-900/40 hover:border-white/15'
+                      ? 'border-electric bg-[#0c0c0e]'
+                      : 'border-white/10 bg-[#09090b]/95 hover:border-white/20'
                   }`}
                 >
                   <div>
                     <h4 className="font-display font-black text-xs text-white uppercase tracking-wider">
                       Express Sprint
                     </h4>
-                    <span className="text-[10px] text-gray-400 font-light mt-1 block">Under 5 Days delivery</span>
+                    <span className="text-xs text-gray-300 font-normal mt-1 block">Under 5 Days delivery</span>
                   </div>
                   <span className="text-xs font-display font-black text-magenta block">
                     + Rs. 15,000
@@ -295,7 +295,7 @@ export const Portfolio: React.FC = () => {
 
           {/* Right Column: Live Terminal Readout Configuration */}
           <div className="lg:col-span-5 sticky top-28">
-            <div className="glass-panel p-8 rounded-3xl border border-white/5 bg-dark-900/50 flex flex-col justify-between min-h-[500px]">
+            <div className="p-8 rounded-3xl border border-white/10 bg-[#070709]/95 backdrop-blur-xl flex flex-col justify-between min-h-[500px] shadow-xl">
               <div>
                 {/* Console Header */}
                 <div className="flex items-center gap-2 border-b border-white/5 pb-4 mb-6">

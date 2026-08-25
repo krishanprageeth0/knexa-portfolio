@@ -8,7 +8,7 @@
 - [x] Refactor `Navbar.tsx` with magnetic links, circular logo monogram + text logo, and Designs gallery anchors
 - [x] Refactor `About.tsx` with split text reveals, self-drawing lines, and modern timeline
 - [x] Refactor `Services.tsx` with glowing tilt panels
-- [x] Refactor `Portfolio.tsx` (Planner page) to add project specs compiler and restore live URL Cyber Directory
+- [x] Refactor `Portfolio.tsx` (Planner page) to add project specs compiler, restore live URL Cyber Directory, and upgrade selection card contrast/text readability
 - [x] Create `Gallery.tsx` graphic design showcase (masonry layout + lightbox) with 23 assets mapped to my project/ folders, prioritizing Social Posts first and rendering 2 columns on mobile (with lazy loading)
 - [x] Create `Loader.tsx` cyber preloader with percentage progress bar and compiling logs
 - [x] Refactor `Contact.tsx` with contact form, circular logo brand card header, and brand confetti
